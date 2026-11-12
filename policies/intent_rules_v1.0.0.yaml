@@ -1,0 +1,75 @@
+apiVersion: jlmai.org/v1.0.0
+kind: IntentExecutionPolicy
+metadata:
+  name: intent-rules-v1.0.0
+  author: Jessica Lynn Moss
+  organization: JLM AI Agent LLC
+  compatibleRuntime: openshell-sandbox-v1
+  defaultDecision: DENY
+
+enforcement:
+  failClosed: true
+  requireSignedWorkOrder: true
+  ephemeralCapabilityTokenTTLSeconds: 60
+  verificationLedger:
+    enabled: true
+    mode: append-only-immutable
+    recordDeniedAttempts: true
+
+fiveVerifierQuestions:
+  - id: VQ1_INTENT_MATCH
+    check: "Does the requested tool call strictly match the signed work order intent?"
+  - id: VQ2_ROLE_BOUNDARY
+    check: "Is the requesting agent role authorized for the target risk tier?"
+  - id: VQ3_PARAMETER_BOUNDS
+    check: "Are target addresses, paths, and value limits within work order constraints?"
+  - id: VQ4_FRESHNESS_NONCE
+    check: "Is the work order version current, unexpired, and unused (anti-replay)?"
+  - id: VQ5_ATTESTATION_VALID
+    check: "Is the cryptographic signature / ZK provenance attestation valid?"
+
+riskTiers:
+  tier_1_read_only:
+    level: 1
+    requiresFounderSignoff: false
+    intents:
+      - read_chain_state
+      - read_telemetry_metrics
+      - inspect_sandbox_status
+      - verify_zk_attestation
+  tier_2_state_changing:
+    level: 2
+    requiresFounderSignoff: false
+    intents:
+      - update_service_config
+      - write_workspace_artifact
+      - dispatch_worker_task
+      - register_webhook_listener
+  tier_3_financial:
+    level: 3
+    requiresFounderSignoff: false
+    intents:
+      - sign_evm_intent_tx
+      - sign_solana_token2022_tx
+      - provision_liquidity_pool
+      - execute_treasury_transfer
+      - record_vault_billing_entry
+  tier_4_founder_only_admin:
+    level: 4
+    requiresFounderSignoff: true
+    autonomousExecutionAllowed: false
+    intents:
+      - rotate_signing_keys
+      - modify_intent_policy_pack
+      - override_firewall_lockdown
+      - purge_vault_records
+
+agentRoles:
+  observer_agent:
+    maxTier: 1
+  orchestrator_agent:
+    maxTier: 2
+  execution_treasury_agent:
+    maxTier: 3
+  founder_admin_operator:
+    maxTier: 4
