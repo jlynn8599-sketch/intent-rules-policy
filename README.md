@@ -39,10 +39,32 @@ Rather than relying on prompt-level guardrails or post-action logging, Intent Ru
 
 ---
 
-## Quick Start & Integration
+## Try it in 5 minutes
+
+No framework install needed — the policy is a plain YAML file, and the
+`examples/try-it/` folder has a minimal reference evaluator that runs the
+deny-by-default gate against it:
+
+```bash
+git clone https://github.com/jlynn8599-sketch/intent-rules-policy.git
+cd intent-rules-policy
+pip install pyyaml
+python3 examples/try-it/intent_gate.py --demo
+```
+
+Expected output: one `ALLOW` (an observer reading chain state) and four
+`DENY`s — a role trying to move treasury funds, an orchestrator reaching
+for founder-only key rotation, an expired work order, and a replayed nonce.
+Every decision is appended to `examples/try-it/verification_ledger.jsonl`.
+
+The evaluator is a teaching demo, not the JLMAI framework and not
+production code: it does not verify Ed25519 signatures (VQ5 is stubbed),
+and it has no network or key management. The framework itself — async
+dispatchers, ZK attestation pipelines, runtime sandboxes — lives in
+[`jlmai-agent-framework`](https://github.com/jlynn8599-sketch/jlmai-agent-framework).
 
 * **Policy Specification:** [`policies/intent_rules_v1.0.0.yaml`](./policies/intent_rules_v1.0.0.yaml)
-* **Framework Integration:** Built to pair natively with [`jlmai-agent-framework`](https://github.com/jlynn8599-sketch/jlmai-agent-framework) (`v2.0.0`) asynchronous dispatchers, ZK attestation pipelines, and runtime container sandboxes.
+* **Reference evaluator:** [`examples/try-it/intent_gate.py`](./examples/try-it/intent_gate.py)
 
 ---
 
