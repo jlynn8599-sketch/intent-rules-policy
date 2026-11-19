@@ -1,0 +1,1 @@
+{"autonomous":true,"constraints":{"allowed_targets":["signing-keyring"],"max_value":0},"expires_at":"2099-01-01T00:00:00Z","founder_signoff":false,"intent":"rotate_signing_keys","nonce":"n-003","policy_version":"v1.0.0","request":{"target":"signing-keyring","value":0},"role":"orchestrator_agent","signature":"demo-signature-placeholder","work_order_id":"wo-demo-003"}
